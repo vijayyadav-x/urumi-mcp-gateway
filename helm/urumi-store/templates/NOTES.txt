@@ -1,0 +1,7 @@
+
+WordPress and MariaDB Helm deployment.
+
+Useful commands:
+  kubectl get pods
+  kubectl get services
+  kubectl get ingress

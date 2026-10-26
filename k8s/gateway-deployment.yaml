@@ -1,0 +1,47 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urumi-mcp-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: urumi-mcp-gateway
+  template:
+    metadata:
+      labels:
+        app: urumi-mcp-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: urumi-mcp-gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8001"
+            - name: GATEWAY_DB_PATH
+              value: "/data/gateway.db"
+            - name: OLLAMA_URL
+              value: "http://host.docker.internal:11434/api/chat"
+          volumeMounts:
+            - name: gateway-data
+              mountPath: /data
+      volumes:
+        - name: gateway-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: urumi-mcp-gateway
+spec:
+  selector:
+    app: urumi-mcp-gateway
+  ports:
+    - port: 8001
+      targetPort: 8001
+  type: ClusterIP

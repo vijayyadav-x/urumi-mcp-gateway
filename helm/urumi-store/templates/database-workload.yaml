@@ -1,0 +1,63 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "urumi-store.fullname" . }}-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "urumi-store.fullname" . }}-db
+  template:
+    metadata:
+      labels:
+        app: {{ include "urumi-store.fullname" . }}-db
+    spec:
+      containers:
+        - name: mariadb
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: MARIADB_DATABASE
+              value: {{ .Values.database.databaseName | quote }}
+            - name: MARIADB_USER
+              value: {{ .Values.database.username | quote }}
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "urumi-store.fullname" . }}-db
+                  key: password
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "urumi-store.fullname" . }}-db
+                  key: root-password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: database-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: database-data
+          persistentVolumeClaim:
+            claimName: {{ include "urumi-store.fullname" . }}-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "urumi-store.fullname" . }}-db
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ include "urumi-store.fullname" . }}-db
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306

@@ -1,0 +1,25 @@
+
+# WordPress configuration
+wordpress:
+  image:
+    repository: wordpress
+    tag: "6.8-apache"
+  replicas: 1
+  servicePort: 80
+  storage: 2Gi
+
+# MariaDB database configuration
+database:
+  image:
+    repository: mariadb
+    tag: "11.4"
+  storage: 2Gi
+  databaseName: wordpress
+  username: wordpress
+  password: "local-dev-only-change-me"
+  rootPassword: "local-root-only-change-me"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  host: urumi.local

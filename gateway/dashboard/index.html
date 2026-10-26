@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Urumi MCP Gateway — connect, explore, and run tools."
+  >
+  <title>Urumi — MCP Workspace</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="Urumi home">
+        <svg
+          class="brand-symbol"
+          viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M11 5.5H21Q24 5.5 24 9V15
+               Q24 23 16 27Q8 23 8 15V9
+               Q8 5.5 11 5.5Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.3"
+            stroke-linejoin="round"
+          />
+          <circle cx="16" cy="12" r="1.7" fill="currentColor"/>
+          <path
+            d="M16 15V19"
+            stroke="currentColor"
+            stroke-width="2.3"
+            stroke-linecap="round"
+          />
+          <circle cx="16" cy="21.5" r="1" fill="currentColor"/>
+        </svg>
+
+        <span class="brand-copy">
+          <strong>Urumi</strong>
+        </span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <p class="nav-heading">WORKSPACE</p>
+
+        <a class="nav-link active" href="#overview">
+          <span class="nav-icon">⌂</span>
+          <span>Overview</span>
+        </a>
+
+        <a class="nav-link" href="#tools-section">
+          <span class="nav-icon">◇</span>
+          <span>Tools</span>
+        </a>
+
+        <a class="nav-link" href="#chat-section">
+          <span class="nav-icon">✳</span>
+          <span>AI Assistant</span>
+        </a>
+
+        <a class="nav-link" href="#servers-section">
+          <span class="nav-icon">⌘</span>
+          <span>Connections</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-footer-label">MCP GATEWAY</div>
+        <div class="sidebar-version">Local development workspace</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="overview">
+
+      <!-- Top Header -->
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">DEVELOPER WORKSPACE</p>
+          <h1>Good to see you.</h1>
+          <p class="page-subtitle">
+            Connect your gateway and explore your available tools.
+          </p>
+        </div>
+
+        <div class="connection-indicator">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="connection-status">Not connected</span>
+        </div>
+      </header>
+
+      <!-- Gateway Connection -->
+      <section class="panel connection-panel" id="connection-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">GET STARTED</p>
+            <h2>Gateway connection</h2>
+            <p class="muted">
+              Enter your local gateway URL and API key to get started.
+            </p>
+          </div>
+
+          <div class="section-icon" aria-hidden="true">↗</div>
+        </div>
+
+        <div class="connection-form">
+          <div class="form-field">
+            <label for="url">Gateway URL</label>
+            <input
+              id="url"
+              type="url"
+              value="http://127.0.0.1:8001"
+              placeholder="http://127.0.0.1:8001"
+              autocomplete="url"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="key">API key</label>
+            <input
+              id="key"
+              type="password"
+              placeholder="Enter your API key"
+              autocomplete="off"
+            >
+          </div>
+
+          <button id="connect" class="btn btn-primary" type="button">
+            Connect gateway
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <div class="connection-footer">
+          <span>Local gateway</span>
+          <span>·</span>
+          <span>Authenticated access</span>
+        </div>
+      </section>
+
+      <!-- Overview Cards -->
+      <section class="overview-grid" aria-label="Workspace overview">
+        <article class="stat-card">
+          <div class="stat-card-top">
+            <span class="stat-label">Available tools</span>
+            <span class="stat-icon" aria-hidden="true">◇</span>
+          </div>
+          <div class="stat-value" id="count">—</div>
+          <p class="stat-description">
+            Tools discovered from your gateway
+          </p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-top">
+            <span class="stat-label">Gateway status</span>
+            <span class="stat-icon" aria-hidden="true">◎</span>
+          </div>
+          <div class="stat-value stat-value-text">Your workspace</div>
+          <p class="stat-description">
+            Manage your connected MCP tools
+          </p>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-top">
+            <span class="stat-label">Execution</span>
+            <span class="stat-icon" aria-hidden="true">↗</span>
+          </div>
+          <div class="stat-value stat-value-text">On demand</div>
+          <p class="stat-description">
+            Run tools and inspect their responses
+          </p>
+        </article>
+      </section>
+
+      <!-- MCP Connections Management -->
+      <section class="panel" id="servers-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ADMINISTRATION</p>
+            <h2>MCP Server Connections</h2>
+            <p class="muted">
+              View and manage the MCP servers registered with your gateway.
+            </p>
+          </div>
+
+          <button
+            id="refresh-servers"
+            class="btn btn-secondary"
+            type="button"
+          >
+            Refresh servers
+          </button>
+        </div>
+
+        <div
+          id="servers-status"
+          class="muted"
+          aria-live="polite"
+        >
+          Connect using an admin API key to load registered servers.
+        </div>
+
+        <div id="servers-list"></div>
+
+        <div class="section-heading">
+          <div>
+            <h3>Add an MCP server</h3>
+            <p class="muted">
+              Register an MCP server with your gateway.
+            </p>
+          </div>
+        </div>
+
+        <form id="server-form" class="connection-form">
+          <div class="form-field">
+            <label for="server-name">Server name</label>
+            <input
+              id="server-name"
+              name="name"
+              type="text"
+              required
+              placeholder="e.g. inventory"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="server-url">MCP server URL</label>
+            <input
+              id="server-url"
+              name="url"
+              type="url"
+              required
+              placeholder="http://127.0.0.1:8004/mcp"
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="server-description">Description</label>
+            <input
+              id="server-description"
+              name="description"
+              type="text"
+              placeholder="What this server does"
+            >
+          </div>
+
+          <button class="btn btn-primary" type="submit">
+            Register server
+          </button>
+        </form>
+      </section>
+
+      <!-- Tools Section -->
+      <section class="panel tools-panel" id="tools-section">
+        <div class="section-heading tools-heading">
+          <div>
+            <p class="eyebrow">DISCOVER</p>
+            <h2>Available tools</h2>
+            <p class="muted">
+              Search your tools, select one, and provide its arguments.
+            </p>
+          </div>
+
+          <button id="refresh" class="btn btn-secondary" type="button">
+            <span aria-hidden="true">↻</span>
+            Refresh
+          </button>
+        </div>
+
+        <div class="tools-layout">
+
+          <!-- Tool List -->
+          <div class="tool-list-column">
+            <div class="search-wrapper">
+              <span class="search-icon" aria-hidden="true">⌕</span>
+              <input
+                id="search"
+                type="search"
+                placeholder="Search tools..."
+                aria-label="Search tools"
+              >
+            </div>
+
+            <div id="tools" class="tool-list">
+              <div class="empty-state">
+                <div class="empty-state-icon" aria-hidden="true">◇</div>
+                <p>Connect your gateway to discover tools.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tool Execution -->
+          <div class="tool-detail-column">
+            <div class="tool-detail-header">
+              <div>
+                <p class="eyebrow">TOOL DETAILS</p>
+                <h3 id="selected">Select a tool</h3>
+              </div>
+              <span class="detail-badge">MCP TOOL</span>
+            </div>
+
+            <p class="muted tool-instruction">
+              Enter the arguments required by your selected tool.
+            </p>
+
+            <div class="form-field">
+              <label for="args">Arguments (JSON)</label>
+              <textarea
+                id="args"
+                rows="7"
+                spellcheck="false"
+                placeholder='{"key": "value"}'
+              >{}</textarea>
+              <p id="arg-hint" class="field-hint">
+                Select a tool to view its argument requirements.
+              </p>
+            </div>
+
+            <button
+              id="run"
+              class="btn btn-primary run-button"
+              type="button"
+              disabled
+            >
+              Run tool
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <!-- Tool Result -->
+            <div class="result-container">
+              <div class="result-header">
+                <h4>Execution result</h4>
+                <span id="result-status" class="result-status">Waiting</span>
+              </div>
+
+              <pre id="output" class="result-output">Your tool output will appear here.</pre>
+
+              <div
+                id="result"
+                class="result-message"
+                aria-live="polite"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Assistant -->
+      <section class="panel chat-panel" id="chat-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">INTERACT</p>
+            <h2>AI assistant</h2>
+            <p class="muted">
+              Try a request using your available gateway tools.
+            </p>
+          </div>
+
+          <div class="assistant-avatar" aria-hidden="true">✳</div>
+        </div>
+
+        <div id="chat-messages" class="chat-messages" aria-live="polite">
+          <div class="chat-message assistant-message">
+            <div class="message-avatar" aria-hidden="true">✳</div>
+            <div class="message-content">
+              <p class="message-author">Urumi Assistant</p>
+              <p>
+                Hello! Connect your gateway first. Then try asking me to
+                list products, check the date and time, or calculate a value.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="Ask something about your tools..."
+            autocomplete="off"
+            aria-label="Message the assistant"
+          >
+
+          <button id="chat-send" class="btn btn-primary" type="submit">
+            Send
+            <span aria-hidden="true">↑</span>
+          </button>
+        </form>
+
+        <div class="chat-footer">
+          <span id="chat-status">Connect your gateway to begin.</span>
+          <span>Responses depend on the configured assistant logic.</span>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="main-footer">
+        <span>Urumi MCP Workspace</span>
+        <span>Local development environment</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

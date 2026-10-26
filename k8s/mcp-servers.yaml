@@ -1,0 +1,75 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urumi-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: urumi-calculator
+  template:
+    metadata:
+      labels:
+        app: urumi-calculator
+    spec:
+      containers:
+        - name: calculator
+          image: urumi-mcp-servers:v2
+          imagePullPolicy: IfNotPresent
+          command: ["python", "calculator_server.py"]
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8002"
+          ports:
+            - containerPort: 8002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: urumi-calculator
+spec:
+  selector:
+    app: urumi-calculator
+  ports:
+    - port: 8002
+      targetPort: 8002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: urumi-datetime
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: urumi-datetime
+  template:
+    metadata:
+      labels:
+        app: urumi-datetime
+    spec:
+      containers:
+        - name: datetime
+          image: urumi-mcp-servers:v2
+          imagePullPolicy: IfNotPresent
+          command: ["python", "datetime_server.py"]
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8003"
+          ports:
+            - containerPort: 8003
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: urumi-datetime
+spec:
+  selector:
+    app: urumi-datetime
+  ports:
+    - port: 8003
+      targetPort: 8003
